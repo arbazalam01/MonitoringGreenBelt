@@ -4,6 +4,7 @@ import { imgDataRef } from "./firebase";
 import { onValue } from "firebase/database";
 import { Grid } from "@mui/material";
 import ShowImages from "./ShowImages";
+import Header from "./Header";
 
 function Home() {
   const [allImages, setAllImages] = useState([]);
@@ -18,15 +19,19 @@ function Home() {
   // console.log(allImages);
 
   return (
-    <Grid container spacing={2}>
-      {allImages.map((imgRef) => {
-        return (
-          <Grid item xs={4}>
-            <ShowImages imgRef={imgRef} />
-          </Grid>
-        );
-      })}
-    </Grid>
+    <div>
+      <Header />
+
+      <Grid container spacing={2}>
+        {allImages.map((imgRef) => {
+          return (
+            <Grid item xs={4}>
+              <ShowImages imgRef={imgRef} />
+            </Grid>
+          );
+        })}
+      </Grid>
+    </div>
   );
 }
 
