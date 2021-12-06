@@ -54,7 +54,6 @@ function ShowImages({ imgRef, imgKey }) {
           marginRight: "auto",
           borderRadius: "20px",
         }}
-        loading="lazy"
       />
       <div style={{ marginRight: "auto", marginLeft: "auto" }}>
         <FormControl component="fieldset">
