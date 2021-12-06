@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
+import { db } from "./firebase";
 import {
   FormControl,
   FormLabel,
@@ -7,11 +8,12 @@ import {
   RadioGroup,
   FormControlLabel,
 } from "@mui/material";
+import { Button } from "react-bootstrap";
+import { update, ref } from "firebase/database";
 
-function ShowImages({ imgRef }) {
-  const imgData = imgRef[Object.keys(imgRef)[0]];
-  const isGreen = imgData.isGreen;
-  const imageUrl = imgData.imageURL;
+function ShowImages({ imgRef, imgKey }) {
+  const isGreen = imgRef.isGreen;
+  const imageUrl = imgRef.imageURL;
   const [value, setValue] = useState(isGreen);
 
   const handleChange = (e) => {
@@ -24,40 +26,62 @@ function ShowImages({ imgRef }) {
 
     const link = document.createElement("a");
     link.href = imageURL;
-    link.download = "image.jpg";
+    link.download = "image.png";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   }
-  // useEffect(() => {
-  //   imgRef.child(imgRef).update({
-  //     isGreen: value,
-  //   });
-  // }, [value]);
-  // console.log(ref(db,imgRef));
+  useEffect(() => {
+    const updates = {};
+    updates["/images/" + imgKey] = { imageURL: imageUrl, isGreen: value };
+    update(ref(db), updates);
+  }, [value]);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column" }}>
-      <img src={imageUrl} alt="drone-img" height="300" width="300" />
-
-      <FormControl component="fieldset">
-        <FormLabel component="legend">Tick if Green</FormLabel>
-        <RadioGroup
-          row
-          aria-label="CheckGreen"
-          value={value}
-          onChange={handleChange}
-          name="radio-buttons-group"
-        >
-          <FormControlLabel value={true} control={<Radio />} label="isGreen" />
-          <FormControlLabel
-            value={false}
-            control={<Radio />}
-            label="NotGreen"
-          />
-        </RadioGroup>
-      </FormControl>
-      <button onClick={downloadImage}>Download</button>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <img
+        src={imageUrl}
+        alt="drone-img"
+        height="300"
+        width="300"
+        style={{
+          marginLeft: "auto",
+          marginRight: "auto",
+          borderRadius: "20px",
+        }}
+        loading="lazy"
+      />
+      <div style={{ marginRight: "auto", marginLeft: "auto" }}>
+        <FormControl component="fieldset">
+          <FormLabel component="legend">Tick if Green</FormLabel>
+          <RadioGroup
+            row
+            aria-label="CheckGreen"
+            value={value}
+            onChange={handleChange}
+            name="radio-buttons-group"
+          >
+            <FormControlLabel
+              value={true}
+              control={<Radio />}
+              label="isGreen"
+            />
+            <FormControlLabel
+              value={false}
+              control={<Radio />}
+              label="NotGreen"
+            />
+          </RadioGroup>
+        </FormControl>
+      </div>
+      <div style={{ marginLeft: "auto", marginRight: "auto" }}>
+        <Button onClick={downloadImage}>Download</Button>
+      </div>
     </div>
   );
 }

@@ -9,12 +9,15 @@ import Header from "./Header";
 function Home() {
   const [allImages, setAllImages] = useState([]);
   useEffect(() => {
-    onValue(imgDataRef, (snapshot) => {
-      const data = snapshot.val();
-      // setAllImages((prevState) => [...prevState, data[Object.keys(data)[0]]]);
-      console.log(data);
-      setAllImages((prevState) => [...prevState, data]);
-    });
+    onValue(
+      imgDataRef,
+      (snapshot) => {
+        snapshot.forEach((childSnapshot) => {
+          setAllImages((prevState) => [...prevState, childSnapshot]);
+        });
+      },
+      { onlyOnce: true }
+    );
   }, []);
   // console.log(allImages);
 
@@ -23,10 +26,12 @@ function Home() {
       <Header />
 
       <Grid container spacing={2}>
-        {allImages.map((imgRef) => {
+        {allImages.map((childData) => {
+          const imgKey = childData.key;
+          const imgRef = childData.val();
           return (
             <Grid item xs={4}>
-              <ShowImages imgRef={imgRef} />
+              <ShowImages imgRef={imgRef} imgKey={imgKey} />
             </Grid>
           );
         })}

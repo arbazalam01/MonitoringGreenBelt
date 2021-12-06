@@ -15,4 +15,11 @@ export default makeStyles(() => ({
   image: {
     marginLeft: "15px",
   },
+  navBar: {
+    display: "flex",
+  },
+  logOut: {
+    paddingLeft: "100px",
+    paddingTop: "18px",
+  },
 }));

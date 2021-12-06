@@ -15,6 +15,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth();
-const imgDataRef = ref(db, "images/");
+const imgDataRef = ref(db, "images");
 
 export { db, imgDataRef, auth };
