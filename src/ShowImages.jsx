@@ -3,18 +3,21 @@ import { useState } from "react";
 import { db } from "./firebase";
 import {
   FormControl,
-  FormLabel,
   Radio,
   RadioGroup,
   FormControlLabel,
 } from "@mui/material";
 import { Button } from "react-bootstrap";
 import { update, ref } from "firebase/database";
+import useStyles from "./imgStyle";
 
 function ShowImages({ imgRef, imgKey }) {
   const isGreen = imgRef.isGreen;
   const imageUrl = imgRef.imageURL;
+  const imgLat = imgRef.Lattitude;
+  const imgLong = imgRef.Longitude;
   const [value, setValue] = useState(isGreen);
+  const classes = useStyles();
 
   const handleChange = (e) => {
     setValue(e.target.value);
@@ -44,20 +47,9 @@ function ShowImages({ imgRef, imgKey }) {
         flexDirection: "column",
       }}
     >
-      <img
-        src={imageUrl}
-        alt="drone-img"
-        height="300"
-        width="300"
-        style={{
-          marginLeft: "auto",
-          marginRight: "auto",
-          borderRadius: "20px",
-        }}
-      />
-      <div style={{ marginRight: "auto", marginLeft: "auto" }}>
+      <img src={imageUrl} alt="drone-img" className={classes.img} />
+      <div className={classes.content}>
         <FormControl component="fieldset">
-          <FormLabel component="legend">Tick if Green</FormLabel>
           <RadioGroup
             row
             aria-label="CheckGreen"
@@ -65,18 +57,18 @@ function ShowImages({ imgRef, imgKey }) {
             onChange={handleChange}
             name="radio-buttons-group"
           >
-            <FormControlLabel
-              value={true}
-              control={<Radio />}
-              label="isGreen"
-            />
+            <FormControlLabel value={true} control={<Radio />} label="Green" />
             <FormControlLabel
               value={false}
               control={<Radio />}
-              label="NotGreen"
+              label="Not Green"
             />
           </RadioGroup>
         </FormControl>
+      </div>
+      <div style={{ marginLeft: "auto", marginRight: "auto", display: "flex" }}>
+        <p>Lattitude: {imgLat}</p>
+        <p style={{ marginLeft: "5px" }}>Longitude: {imgLong}</p>
       </div>
       <div style={{ marginLeft: "auto", marginRight: "auto" }}>
         <Button onClick={downloadImage}>Download</Button>

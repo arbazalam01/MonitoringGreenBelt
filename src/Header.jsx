@@ -4,28 +4,30 @@ import useStyles from "./styles.js";
 import { useAuth } from "./contexts/AuthContext";
 import { Button } from "react-bootstrap";
 import emailjs, { init } from "emailjs-com";
-// import { useAuth } from "./contexts/AuthContext";
 
 function Header({ imgData }) {
   const [loading, setLoading] = useState(false);
-  init("user_iRSIk9h3Ibe10IBGxCshv");
+  init("user_aGUGJF5uKL2wb5NLjsM6D");
   const { currentUser } = useAuth();
   const { logout } = useAuth();
   const classes = useStyles();
-  // console.log(Object.values(imgData));
 
   const sendEmail = async () => {
     setLoading(true);
     let str = "";
-    Object.entries(imgData).forEach(
-      ([key, value], index) => (str += `${index + 1}.${value.imageURL}\n`)
-    );
+    let index = 1;
+    Object.entries(imgData).forEach(([key, value]) => {
+      if (!value.isGreen) {
+        str += `${index}.${value.imageURL}\n`;
+        index += 1;
+      }
+    });
     const data = {
       to_email: currentUser.email,
       message: str,
     };
     try {
-      await emailjs.send("service_o0d4j8m", "template_v2qqd9g", data);
+      await emailjs.send("service_z2z0vss", "template_nhx5ahf", data);
     } catch (err) {
       console.log(err);
     }
@@ -40,13 +42,17 @@ function Header({ imgData }) {
           <Typography className={classes.heading} variant="h2" align="center">
             Monitoring Green Belt
           </Typography>
-          <div className={classes.logOut}>
-            <Button onClick={logout}>Logout</Button>
-          </div>
+
           <div className={classes.logOut}>
             <Button disabled={loading} onClick={sendEmail}>
-              Email Images
+              Send Images
             </Button>
+            <p>
+              To this email: <b>{currentUser.email}</b>{" "}
+            </p>
+          </div>
+          <div className={classes.logOut}>
+            <Button onClick={logout}>Logout</Button>
           </div>
         </div>
       </AppBar>
